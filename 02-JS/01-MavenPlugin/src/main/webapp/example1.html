@@ -1,0 +1,28 @@
+<html>
+<head>
+
+    <script src="../../main/resources/js/app1/main.js"></script>
+    <script src="../../main/resources/js/app1/module-1.js"></script>
+    <script src="../../main/resources/js/app1/module-2.js"></script>
+<script type="text/javascript">
+
+    function mmyFunc() {
+        console.log("running");
+        myApp1.init("John Doe");
+        myApp1.setRemoteService(app1RemoteService);
+        myApp1.setTaxStrategy(app1TaxStrategyFactory.getInstance("FINLAND/23/14/8"));
+
+        console.log(myApp1.getName());
+        console.log(myApp1.countTaxFor(12));
+        console.log(myApp1.callRemote());
+    }
+</script>
+
+
+</head>
+<body onload="mmyFunc();">
+<h2>Hello Js Example</h2>
+
+<p>This example you open as file from the sources folder via file://.</p>
+</body>
+</html>

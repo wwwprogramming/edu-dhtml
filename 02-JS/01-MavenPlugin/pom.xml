@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.uta.sis.dhtml</groupId>
+  <artifactId>js</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>JS Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- http://mvnrepository.com/artifact/com.samaxes.maven/minify-maven-plugin -->
+    <dependency>
+      <groupId>com.samaxes.maven</groupId>
+      <artifactId>minify-maven-plugin</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+    <!-- http://mvnrepository.com/artifact/org.apache.maven.plugins/maven-help-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-help-plugin</artifactId>
+      <version>2.2</version>
+    </dependency>
+
+
+  </dependencies>
+  <build>
+    <finalName>js-example</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+
+        <configuration>
+          <path>/</path>
+          <port>8080</port>
+        </configuration>
+
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/src/main/webapp/static/js</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/dist/js/</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.samaxes.maven</groupId>
+        <artifactId>minify-maven-plugin</artifactId>
+        <version>1.7.4</version>
+        <executions>
+          <execution>
+            <id>default-minify</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <!--
+              No css to minify in this example.
+              <cssSourceFiles>
+                <cssSourceFile>not-a-less-file.css</cssSourceFile>
+              </cssSourceFiles>
+              -->
+              <webappSourceDir>${project.basedir}/src/main/resources/</webappSourceDir>
+              <webappTargetDir>${project.basedir}/src/main/resources/</webappTargetDir>
+              <jsSourceDir>js/app1/</jsSourceDir>
+              <jsSourceFiles>
+                <jsSourceFile>main.js</jsSourceFile>
+                <jsSourceFile>module-1.js</jsSourceFile>
+                <jsSourceFile>module-2.js</jsSourceFile>
+                <!--
+                <jsSourceFile>init.js</jsSourceFile>
+                -->
+              </jsSourceFiles>
+              <!--
+              <jsSourceExcludes>
+                <jsSourceExclude>init.js</jsSourceExclude>
+              </jsSourceExcludes>
+              -->
+              <jsFinalFile>app1.js</jsFinalFile>
+              <jsTargetDir>dist/js</jsTargetDir>
+              <verbose>true</verbose>
+            </configuration>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

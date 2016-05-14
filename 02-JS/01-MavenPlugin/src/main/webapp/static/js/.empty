@@ -1,0 +1,2 @@
+Project will build app1.js and app1.min.js here.
+They are placed here and not under the resource folder because this is not a spring application.
