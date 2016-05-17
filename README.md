@@ -22,9 +22,11 @@ Always read the wikipedia article about new topics.
 
 ##Javascript
 
-
-
+https://developer.mozilla.org/en-US/docs/Web/JavaScript
+https://github.com/lukehoban/es6features
 http://es6-features.org/
+
+http://stackoverflow.com/questions/133973/how-does-this-keyword-work-within-a-javascript-object-literal
 
 https://en.wikipedia.org/wiki/Shim_%28computing%29
 https://en.wikipedia.org/wiki/Polyfill
