@@ -108,7 +108,7 @@
 
     <!-- OUTGOING -->
 
-   
+
 
     <int:channel id="sendMessage">
         <int:dispatcher task-executor="executor"/>
