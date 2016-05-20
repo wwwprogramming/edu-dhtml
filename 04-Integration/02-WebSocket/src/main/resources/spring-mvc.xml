@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	- DispatcherServlet application context for web tier.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:int-websocket="http://www.springframework.org/schema/integration/websocket"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-event="http://www.springframework.org/schema/integration/event"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:int-stomp="http://www.springframework.org/schema/integration/stomp"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/websocket
+			http://www.springframework.org/schema/integration/websocket/spring-integration-websocket.xsd
+			http://www.springframework.org/schema/integration/event
+			http://www.springframework.org/schema/integration/event/spring-integration-event.xsd
+			http://www.springframework.org/schema/task
+			http://www.springframework.org/schema/task/spring-task.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+
+    <mvc:annotation-driven />
+
+    <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" />
+
+    <context:component-scan base-package="edu.uta.sis.mvc1.web" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/view/jsp</value>
+        </property>
+
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+    <bean id="application.properties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:app.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+
+    <!-- websocket / stomp / -->
+
+    <int:wire-tap channel="logger"/>
+
+    <int:logging-channel-adapter id="logger" level="INFO" log-full-message="true"/>
+
+    <task:executor id="executor"/>
+
+    <int-websocket:server-container id="serverWebSocketContainer" path="/app1" >
+        <int-websocket:sockjs heartbeat-time="10000"/>
+    </int-websocket:server-container>
+
+    <bean id="stompSubProtocolHandler" class="org.springframework.web.socket.messaging.StompSubProtocolHandler"/>
+
+    <int:channel id="receiveMessage"/>
+
+    <int:channel id="receiveEvent"/>
+
+    <int-websocket:inbound-channel-adapter channel="receiveMessage" container="serverWebSocketContainer"
+                                           default-protocol-handler="stompSubProtocolHandler"/>
+
+    <int-event:inbound-channel-adapter event-types="org.springframework.web.socket.messaging.AbstractSubProtocolEvent"
+                                       payload-expression="message"
+                                       channel="routeStompEvents"/>
+
+    <!-- INCOMING EVENTS and possible MESSAGE, see StompSubProtocolHandler code on details -->
+
+    <int:header-value-router input-channel="routeStompEvents"
+                             header-name="simpMessageType"
+                             resolution-required="false"
+                             default-output-channel="nullChannel">
+        <int:mapping value="#{T(org.springframework.messaging.simp.SimpMessageType).CONNECT_ACK.name()}"
+                     channel="receiveEvent"/>
+        <int:mapping value="#{T(org.springframework.messaging.simp.SimpMessageType).SUBSCRIBE.name()}"
+                     channel="receiveEvent"/>
+        <int:mapping value="#{T(org.springframework.messaging.simp.SimpMessageType).UNSUBSCRIBE.name()}"
+                     channel="receiveEvent"/>
+        <int:mapping value="#{T(org.springframework.messaging.simp.SimpMessageType).DISCONNECT.name()}"
+                     channel="receiveEvent"/>
+    </int:header-value-router>
+
+    <int:service-activator input-channel="receiveMessage" output-channel="nullChannel"
+                           ref="integrationEndPoint" method="messageIn"/>
+
+    <int:service-activator input-channel="receiveEvent" output-channel="nullChannel"
+                           ref="integrationEndPoint" method="handleEvent"/>
+
+
+    <!-- sent message, there should be none as web-app is only receiving -->
+
+
+
+
+    <!-- OUTGOING -->
+
+   
+
+    <int:channel id="sendMessage">
+        <int:dispatcher task-executor="executor"/>
+    </int:channel>
+
+    <int-websocket:outbound-channel-adapter   channel="sendMessage" container="serverWebSocketContainer"
+                                            default-protocol-handler="stompSubProtocolHandler"/>
+
+
+</beans>
