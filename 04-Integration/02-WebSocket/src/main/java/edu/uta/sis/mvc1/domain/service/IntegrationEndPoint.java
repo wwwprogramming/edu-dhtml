@@ -12,5 +12,11 @@ public interface IntegrationEndPoint {
 
     public void handleEvent(MessageHeaders headers, Message<Object> message);
 
+    public String getSessionId();
+
+    public String getDestination();
+
+    public String getSubscription();
+
 
 }

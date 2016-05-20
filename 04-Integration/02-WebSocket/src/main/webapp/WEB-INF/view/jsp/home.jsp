@@ -26,14 +26,14 @@
         }
 
         function subscribe() {
-            subscriptions["a1"] = stompClient.subscribe('/topic/a1', function (message) {
+            subscriptions["a1"] = stompClient.subscribe('/t1', function (message) {
                 console.log("in");
                 console.log(message);
             });
         }
 
         function send() {
-            stompClient.send('/topic/a1', {subscription: 'X'}, "Hello World");
+            stompClient.send('/app1', {subscription: '/t1'}, "Hello World");
         }
 
 
