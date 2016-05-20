@@ -22,6 +22,8 @@ public class IntegrationEndPointImpl implements IntegrationEndPoint {
 
     SimpleMetadataStore metadataStore = new SimpleMetadataStore();
 
+
+
     public void messageIn(String message) {
         logger.info("INCOMING: ["+message+"]");
     }
@@ -33,10 +35,31 @@ public class IntegrationEndPointImpl implements IntegrationEndPoint {
         if (headers.get(SimpMessageHeaderAccessor.MESSAGE_TYPE_HEADER).equals("CONNECT_ACK")) {
             metadataStore.put((String)headers.get(SimpMessageHeaderAccessor.MESSAGE_TYPE_HEADER), "identifier-1");
         }
-        if (headers.get(SimpMessageHeaderAccessor.MESSAGE_TYPE_HEADER).equals("SUBSCRIBE")) {
-            metadataStore.put((String)headers.get(SimpMessageHeaderAccessor.MESSAGE_TYPE_HEADER),
+        if ((headers.get(SimpMessageHeaderAccessor.MESSAGE_TYPE_HEADER).toString()).equals("SUBSCRIBE")) {
+            metadataStore.put(SimpMessageHeaderAccessor.SUBSCRIPTION_ID_HEADER,
                     (String)headers.get(SimpMessageHeaderAccessor.SUBSCRIPTION_ID_HEADER));
+
+            metadataStore.put(SimpMessageHeaderAccessor.DESTINATION_HEADER,
+                    (String)headers.get(SimpMessageHeaderAccessor.DESTINATION_HEADER));
+
+            metadataStore.put(SimpMessageHeaderAccessor.SESSION_ID_HEADER,
+                    (String)headers.get(SimpMessageHeaderAccessor.SESSION_ID_HEADER));
+
+
         }
+    }
+
+    public String getSessionId() {
+        return metadataStore.get(SimpMessageHeaderAccessor.SESSION_ID_HEADER);
+    }
+
+    public String getDestination() {
+        return metadataStore.get(SimpMessageHeaderAccessor.DESTINATION_HEADER);
+    }
+
+
+    public String getSubscription() {
+        return metadataStore.get(SimpMessageHeaderAccessor.SUBSCRIPTION_ID_HEADER);
     }
 
 

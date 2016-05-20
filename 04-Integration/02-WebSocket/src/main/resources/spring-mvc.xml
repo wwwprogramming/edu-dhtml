@@ -61,11 +61,15 @@
 
     <task:executor id="executor"/>
 
-    <int-websocket:server-container id="serverWebSocketContainer" path="/app1" >
-        <int-websocket:sockjs heartbeat-time="10000"/>
+    <int-websocket:server-container id="serverWebSocketContainer" path="/app1"  >
+        <int-websocket:sockjs heartbeat-time="10000" />
     </int-websocket:server-container>
 
     <bean id="stompSubProtocolHandler" class="org.springframework.web.socket.messaging.StompSubProtocolHandler"/>
+
+    <bean  id="simpleMessageTemplate" class="org.springframework.messaging.simp.SimpMessagingTemplate">
+        <constructor-arg ref="sendMessage" />
+    </bean>
 
     <int:channel id="receiveMessage"/>
 
@@ -113,6 +117,8 @@
     <int:channel id="sendMessage">
         <int:dispatcher task-executor="executor"/>
     </int:channel>
+
+
 
     <int-websocket:outbound-channel-adapter   channel="sendMessage" container="serverWebSocketContainer"
                                             default-protocol-handler="stompSubProtocolHandler"/>
