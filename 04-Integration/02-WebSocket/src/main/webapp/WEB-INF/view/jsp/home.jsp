@@ -14,31 +14,41 @@
 
         function connect() {
 
-                sock = new SockJS('http://localhost:8080/app1');
+                sock = new SockJS('http://localhost:8080/ws/app1');
                 sock.onheartbeat = function() {
                     console.log('heartbeat');
                 };
-                stompClient = Stomp.over(sock);
-                stompClient.connect({whateva: "abbabaaaba"}, function (frame) {
+                stompClient = Stomp.over(sock,['v11.stomp']);
+                var headers = {
+                    login: 'anonymous',
+                    passcode: 'access',
+                    "x-testing": true
+                };
+                stompClient.connect(headers, function (frame) {
                     console.log("connected");
+                    console.log(frame);
+                }, function(error) {
+                    console.log("not connected");
+                    console.log(error);
                 });
 
         }
 
         function subscribe() {
-            subscriptions["a1"] = stompClient.subscribe('/t1', function (message) {
-                console.log("in");
+            subscriptions["t1"] = stompClient.subscribe('/t1', function (message) {
+                console.log("incoming message from ... ");
                 console.log(message);
             });
         }
 
         function send() {
-            stompClient.send('/app1', {subscription: '/t1'}, "Hello World");
+            stompClient.send('/t1', {}, "Hello World");
         }
 
 
         function unsubscribe() {
-            subscriptions["a1"].unsubscribe();
+            subscriptions["t1"].unsubscribe();
+            delete subscriptions["a1"];
         }
 
         function disconnect() {
@@ -63,6 +73,10 @@
 </ul>
 
 <button onclick="connect();">Connect</button>
+
+<button onclick="subscribe();">Subscribe</button>
+
+<button onclick="send('MOIMOI MOI');">Send MOIMOIMOI</button>
 <pre id="messages"></pre>
 </body>
 </html>

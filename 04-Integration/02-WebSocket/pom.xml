@@ -61,6 +61,8 @@
       <version>4.2.6.RELEASE</version>
     </dependency>
 
+
+
     <!-- http://mvnrepository.com/artifact/org.springframework.integration/spring-integration-event -->
     <dependency>
       <groupId>org.springframework.integration</groupId>

@@ -61,15 +61,13 @@
 
     <task:executor id="executor"/>
 
-    <int-websocket:server-container id="serverWebSocketContainer" path="/app1"  >
+    <int-websocket:server-container id="serverWebSocketContainer" path="/ws/app1"  >
         <int-websocket:sockjs heartbeat-time="10000" />
     </int-websocket:server-container>
 
     <bean id="stompSubProtocolHandler" class="org.springframework.web.socket.messaging.StompSubProtocolHandler"/>
 
-    <bean  id="simpleMessageTemplate" class="org.springframework.messaging.simp.SimpMessagingTemplate">
-        <constructor-arg ref="sendMessage" />
-    </bean>
+
 
     <int:channel id="receiveMessage"/>
 
@@ -104,24 +102,34 @@
     <int:service-activator input-channel="receiveEvent" output-channel="nullChannel"
                            ref="integrationEndPoint" method="handleEvent"/>
 
+    <!--  and push to browser -->
 
-    <!-- sent message, there should be none as web-app is only receiving -->
+    <bean id="simpleMessageTemplate" class="org.springframework.messaging.simp.SimpMessagingTemplate">
+        <constructor-arg ref="sendMessage" />
 
-
-
-
-    <!-- OUTGOING -->
-
+    </bean>
 
 
-    <int:channel id="sendMessage">
-        <int:dispatcher task-executor="executor"/>
-    </int:channel>
+    <int:channel id="sendMessage"></int:channel>
 
+    <int:header-enricher default-overwrite="true" input-channel="sendMessage" output-channel="sendOut">
+        <int:header name="#{T(org.springframework.messaging.simp.stomp.StompHeaderAccessor).SESSION_ID_HEADER}"
+                        expression="headers['nativeHeaders']['simpSessionId'][0]"/>
+        <!-- StompSubProtocolhandler searches simpSubscriptionId from headers - not native but headers -->
+        <int:header name="simpSubscriptionId" expression="headers['nativeHeaders']['simpSubscriptionId'][0]"/>
+        <int:header
+                name="#{T(org.springframework.messaging.simp.stomp.StompHeaderAccessor).STOMP_SUBSCRIPTION_HEADER}"
+                expression="headers['nativeHeaders']['simpSubscriptionId'][0]"/>
+        <int:header
+                name="#{T(org.springframework.messaging.simp.stomp.StompHeaderAccessor).STOMP_DESTINATION_HEADER}"
+                expression="headers['nativeHeaders']['simpDestination'][0]"/>
+    </int:header-enricher>
 
+    <int:channel id="sendOut"></int:channel>
 
-    <int-websocket:outbound-channel-adapter   channel="sendMessage" container="serverWebSocketContainer"
-                                            default-protocol-handler="stompSubProtocolHandler"/>
+    <int-websocket:outbound-channel-adapter  channel="sendOut" container="serverWebSocketContainer"
+                                            default-protocol-handler="stompSubProtocolHandler">
+    </int-websocket:outbound-channel-adapter>
 
 
 </beans>
