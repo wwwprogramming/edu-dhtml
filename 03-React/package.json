@@ -1,0 +1,10 @@
+{
+  "name": "my-demo",
+  "version": "1.0.0",
+  "scripts": {
+    "compile": "babel --plugins transform-react-jsx applicationjs.js --out-file app.es5.js"
+  },
+  "devDependencies": {
+    
+  }
+}
