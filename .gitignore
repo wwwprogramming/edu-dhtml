@@ -5,6 +5,8 @@
 *.iml
 target/
 
+node_modules/
+
 
 .idea
 .idea/**
@@ -225,3 +227,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/03-NG/nbproject/private/
+/03-React/nbproject/private/
