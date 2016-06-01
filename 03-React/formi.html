@@ -1,0 +1,134 @@
+<html>
+
+<head>
+        <meta charset="UTF-8" >
+	<title>DHTML Harkka</title>
+
+	<script src="media/js/jquery-2.1.4.js"></script>
+	<script src="media/js/lodash.js"></script>
+	<script src="media/js/moment.js"></script>
+	<script src="media/js/bootstrap.js"></script>
+                
+        <!--
+        react. and babel to do inline jsx
+        -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+        
+        
+        <link rel="stylesheet" type="text/css" href="media/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="media/css/bootstrap-theme.css">
+
+</head>
+
+<body>
+
+<h1>Template for dynamic table application in React</h1>
+
+
+<div class="container">
+	<div id="application" class="row">
+		
+	</div>
+   <!--
+        <script type="text/javascript" src="app.es5.js"></script>
+     -->
+        <script type="text/babel" >
+            
+			var Title = React.createClass({
+                displayName: 'myTitle',
+                render: function() {
+                  return (
+                    <div>      
+                        <label>Title</label><input value={this.props.value} onChange={this.props.change} type="text"  />
+						<span>{this.props.value}</span>
+                    </div>
+                    )
+                }
+              });
+			  
+			 var DateTime = React.createClass({
+                displayName: 'myDT',
+                render: function() {
+                  return (
+                    <div>      
+                        <label>{this.props.label}</label><input type="text"  />
+                    </div>
+                    )
+                }
+              });
+			  
+			  
+			  var Description = React.createClass({
+                displayName: 'mydesc',
+                render: function() {
+                  return (
+                    <div>      
+                        <label>Description</label><textarea></textarea>
+                    </div>
+                    )
+                }
+              });
+			  
+			 var Submit = React.createClass({
+                displayName: 'mysubmit',
+                render: function() {
+                  return (
+                    <div>      
+                        <button onClick={this.props.handle}>SAVE</button>
+                    </div>
+                    )
+                }
+              });
+			
+			var FormApplication = React.createClass({
+                displayName: 'ExampleApplication',
+                getInitialState: function() {
+                    return {title: "xxx", start: "2016-06-15 12:12"};
+                },
+				handleTitleChange: function(e) {
+					console.log("title change");
+					console.log("Value now:" + e.target.value);
+					//this.state.title = e.target.value;
+					console.log(this.state.title);
+					this.setState({title:e.target.value});
+				},
+				cliketiCLick: function(e) {
+					console.log(e);
+					console.log(this.state.title);
+				},
+                render: function() {
+                  return (
+                    <div>      
+                        <div className="col-md-4">
+                            DEBUG HERE
+                        </div>
+                        <div className="col-md-8" >
+                            <Title value={this.state.title} change={this.handleTitleChange} />
+							<DateTime label="start" />
+							<DateTime label="end"/>
+							<Description />
+							<Submit handle={this.cliketiCLick} />
+							
+                        </div>
+                    </div>
+                    )
+                }
+              });
+              
+
+            
+            ReactDOM.render(
+                <FormApplication data={{}} />,
+                document.getElementById('application')
+            );
+            
+      
+        </script>
+     
+</div>
+
+</body>
+
+</html>
