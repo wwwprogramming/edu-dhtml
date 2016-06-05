@@ -18,7 +18,7 @@ import React from "react";
                   return (
                     <div>
                         <label>{this.props.label}</label>
-                        <span>{this.props.value}</span>
+                        <span>{this.props.value && this.props.value.format("DD.MM.YYYY HH:mm")}</span>
                     </div>
                     )
                 }

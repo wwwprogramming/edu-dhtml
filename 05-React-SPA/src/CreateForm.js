@@ -1,8 +1,9 @@
 import React from 'react';
+import moment from "moment";
 
 import {Title, DateTime, Description, Submit} from "./FormModules";
 
-import moment from "moment";
+import EntriesProxy from "./EntriesProxy";
 
 
 export default class CreateForm extends React.Component {
@@ -19,7 +20,7 @@ export default class CreateForm extends React.Component {
   			start: moment().format("DD.MM.YYYY 12:00"),
   			end: moment().format("DD.MM.YYYY 14:00"),
   			description: "What is happening?"
-  		}	
+  		};
  	}
 	_handleTitleChange(e) {
 		this.setState({title:e.target.value});
@@ -34,11 +35,9 @@ export default class CreateForm extends React.Component {
 		this.setState({description:e.target.value});
 	}
 	_handleSubmit() {
-		// TODO AJAX TO SERVER
 		console.log(this.state);
-		var dummyId= 10;
-		// this.props.router.push(`/show${generatedIdFromAjaxReply}`);
-		this.props.router.push(`/show/${dummyId}`);
+		var id = EntriesProxy.addEntry(this.state);
+		this.props.router.push(`/show/${id}`);
 	}
   render() {
     return <div className="create">

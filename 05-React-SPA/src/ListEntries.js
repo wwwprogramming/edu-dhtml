@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-import { Link } from 'react-router'
+import { Link } from 'react-router';
 
 
 class EntryRow extends React.Component {
@@ -26,14 +26,15 @@ class EntryRow extends React.Component {
 
 export default class ListEntries extends React.Component {
   constructor(props) {
+    console.log(props);
     super(props);
   }
   render() {
 
   	// TODO remove this kind of binding to route object
-  	console.log(this.props.route);
+  	console.log(this.props);
   	
-    var rowNodes = this.props.route.rows.map(function(row) {
+    var rowNodes = this.props.rows.map(function(row) {
         return (
         	<EntryRow key={row.id} entry={row} />
         );

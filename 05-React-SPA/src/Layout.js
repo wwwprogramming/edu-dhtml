@@ -8,6 +8,8 @@ export default class Layout extends React.Component {
     <Link to="/about" activeClassName="active" >About</Link>
     <Link to="/create" activeClassName="active" >Create</Link>
     
+    <Link to="/list" activeClassName="active" >List 2</Link>
+    
     {this.props.children}
     </div>);
   }
