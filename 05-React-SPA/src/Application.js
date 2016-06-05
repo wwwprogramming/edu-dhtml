@@ -34,9 +34,9 @@ export default class Application extends React.Component {
             <Route path="/" component={Layout} >
                 <IndexRoute rows={[{id:1, title: "title-1", start:moment(), end: moment()}]} component={ListEntries} />
                 <Route path="/about" component={ About } />
-                <Route path="/create" component={ CreateForm } />
+                <Route path="/create" component={ withRouter(CreateForm) } />
                 <Route path="/edit/:id" component={ withRouter(UpdateForm) } />
-                <Route path="/show/:id" component={ Entry } />
+                <Route path="/show/:id" component={ withRouter(Entry) } />
             </Route>
                 
         </Router>
